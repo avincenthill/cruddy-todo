@@ -6,6 +6,7 @@ const counter = require('./counter');
 var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
+//FIX THESE BELOW//////////////////////
 exports.dataDir = path.join(__dirname, 'data');
 exports.create = (text, callback) => {
   let id = null;
@@ -17,10 +18,12 @@ exports.create = (text, callback) => {
       // let filePath = path.join(__dirname, 'data', id + '.txt');
       fs.writeFile(path.join(exports.dataDir, id + '.txt'), text, () => {
         //on failure/success
+        //TBD pass in callback instead of this anonf
       });
     }
   });
 
+  //TBD: do we need these below?
   //volatile solution
   items[id] = text;
 
@@ -75,3 +78,8 @@ exports.initialize = () => {
     fs.mkdirSync(exports.dataDir);
   }
 };
+
+//bash command to clear data stores - AVH
+/*
+rm /Users/student/hrsf102-cruddy-todo/datastore/data/*.txt && rm /Users/student/hrsf102-cruddy-todo/test/testData/*.txt
+*/
