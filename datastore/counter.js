@@ -1,3 +1,4 @@
+//TBD  do we need the below
 // import { write } from 'fs';
 
 const fs = require('fs');
@@ -6,13 +7,8 @@ const sprintf = require('sprintf-js').sprintf;
 
 var counter = 0;
 
-// Private helper functions ////////////////////////////////////////////////////
-
-// Zero padded numbers can only be represented as strings.
-// If you don't know what a zero-padded number is, read the
-// Wikipedia entry on Leading Zeros and check out some of code links:
-// https://www.google.com/search?q=what+is+a+zero+padded+number%3F
-//////DO NOT TOUCH///////////
+// Private helper functions-- DO NOT MODIFY
+//////////////////////////////////////////////
 
 const zeroPaddedNumber = num => {
   return sprintf('%05d', num);
@@ -39,13 +35,13 @@ const writeCounter = (count, callback) => {
   });
 };
 
-// Public API - Fix this function //////////////////////////////////////////////
+// Public API -- YOU CAN TOUCH THIS
+//////////////////////////////////////////////
 
 exports.getNextUniqueId = callback => {
   //read counter txt
   readCounter((err, num) => {
-    //write counter txt
-    //increment counter
+    //write counter txt and increment counter
     writeCounter(num + 1, (err, counterStr) => {
       //return counter
       callback(null, counterStr);
@@ -53,6 +49,7 @@ exports.getNextUniqueId = callback => {
   });
 };
 
-// Configuration -- DO NOT MODIFY //////////////////////////////////////////////
+// Configuration -- DO NOT MODIFY
+//////////////////////////////////////////////
 
 exports.counterFile = path.join(__dirname, 'counter.txt');

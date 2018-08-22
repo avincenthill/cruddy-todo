@@ -6,13 +6,15 @@ const counter = require('./counter');
 var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
-//FIX THESE BELOW//////////////////////
+//TBD fix these functions
+
 exports.dataDir = path.join(__dirname, 'data');
 exports.create = (text, callback) => {
   let id = null;
   counter.getNextUniqueId((err, number) => {
     if (err) {
-      console.log('ERROR in create');
+      console.error('error getting next unique id');
+      throw 'error getting next unique id';
     } else {
       id = number;
       // let filePath = path.join(__dirname, 'data', id + '.txt');
@@ -26,12 +28,14 @@ exports.create = (text, callback) => {
   //TBD: do we need these below?
   //volatile solution
   items[id] = text;
-
   //send back success http response
   callback(null, { id: id, text: text });
 };
 
 exports.readOne = (id, callback) => {
+  //TBD: implement nonvolatile solution
+
+  //volatile solution
   var item = items[id];
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
@@ -41,6 +45,9 @@ exports.readOne = (id, callback) => {
 };
 
 exports.readAll = callback => {
+  //TBD: implement nonvolatile solution
+
+  //volatile solution
   var data = [];
   _.each(items, (item, idx) => {
     data.push({ id: idx, text: items[idx] });
@@ -49,6 +56,9 @@ exports.readAll = callback => {
 };
 
 exports.update = (id, text, callback) => {
+  //TBD: implement nonvolatile solution
+
+  //volatile solution
   var item = items[id];
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
@@ -59,6 +69,9 @@ exports.update = (id, text, callback) => {
 };
 
 exports.delete = (id, callback) => {
+  //TBD: implement nonvolatile solution
+
+  //volatile solution
   var item = items[id];
   delete items[id];
   if (!item) {

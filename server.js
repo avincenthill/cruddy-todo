@@ -68,8 +68,7 @@ app.delete('/todo/:id', (req, res) => {
 
 const port = 3000;
 app.listen(port, () => {
-  console.log('CRUDdy Todo server is running in the terminal');
-  console.log(`To get started, visit: http://localhost:${port}`);
+  console.log('CRUDdy Todo server is running at ' + `http://localhost:${port}`);
 });
 
 Todo.initialize();
