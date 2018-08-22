@@ -1,4 +1,3 @@
-
 // Todo Model //////////////////////////////////////////////////////////////////
 
 const Todo = require('./datastore');
@@ -13,7 +12,7 @@ const path = require('path');
 const app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, './public')));
 
 // RESTful Routes for CRUD operations //////////////////////////////////////////
@@ -56,7 +55,7 @@ app.put('/todo/:id', (req, res) => {
 
 // Delete (cruD) -- member route
 app.delete('/todo/:id', (req, res) => {
-  Todo.delete(req.params.id, (err) => {
+  Todo.delete(req.params.id, err => {
     if (err) {
       res.sendStatus(404);
     } else {
