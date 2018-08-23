@@ -42,9 +42,9 @@ exports.getNextUniqueId = callback => {
   //read counter txt
   readCounter((err, num) => {
     //write counter txt and increment counter
-    writeCounter(num + 1, (err, counterStr) => {
+    writeCounter(num + 1, (err, uniqueId) => {
       //return counter
-      callback(null, counterStr);
+      callback(null, uniqueId);
     });
   });
 };

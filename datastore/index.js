@@ -9,29 +9,28 @@ var items = {};
 //TBD fix these functions
 
 exports.dataDir = path.join(__dirname, 'data');
+
+//POST
 exports.create = (text, callback) => {
-  let id = null;
-  counter.getNextUniqueId((err, number) => {
+  counter.getNextUniqueId((err, id) => {
     if (err) {
       console.error('error getting next unique id');
       throw 'error getting next unique id';
     } else {
-      id = number;
-      // let filePath = path.join(__dirname, 'data', id + '.txt');
-      fs.writeFile(path.join(exports.dataDir, id + '.txt'), text, () => {
-        //on failure/success
-        //TBD pass in callback instead of this anonf
+      fs.writeFile(path.join(exports.dataDir, id + '.txt'), text, err => {
+        if (err) {
+          console.error('error writing to file');
+          throw 'error writing to file';
+        } else {
+          //pass back todo obj into http body cb in app.post
+          callback(null, { id: id, text: text });
+        }
       });
     }
   });
-
-  //TBD: do we need these below?
-  //volatile solution
-  items[id] = text;
-  //send back success http response
-  callback(null, { id: id, text: text });
 };
 
+//GET
 exports.readOne = (id, callback) => {
   //TBD: implement nonvolatile solution
 
@@ -44,17 +43,38 @@ exports.readOne = (id, callback) => {
   }
 };
 
+//GET
 exports.readAll = callback => {
-  //TBD: implement nonvolatile solution
-
-  //volatile solution
-  var data = [];
-  _.each(items, (item, idx) => {
-    data.push({ id: idx, text: items[idx] });
+  fs.readdir(exports.dataDir, (err, fileNames) => {
+    if (err) {
+      console.error('error reading from directory');
+      throw 'error reading directory';
+    } else {
+      let todoList = [];
+      for (let file of fileNames) {
+        todoList.push({ id: file.slice(0, -4), text: file.slice(0, -4) });
+      }
+      callback(null, todoList);
+    }
   });
-  callback(null, data);
+
+  // call readdir, async.
+  // create objects with just {id: id, text: id}
+  // later, when we know promises, we can promise the right text.
+  // push objects from result of readdir onto data array.
+  // when we get to base of callback hell, invoke original callback with return array.
+  //invoke callback on something.
+  // return an array with all saved todo objects: {id: id, text: text}
+  //volatile solution
+
+  // var data = [];
+  // _.each(items, (item, idx) => {
+  //   data.push({ id: idx, text: items[idx] });
+  // });
+  // callback(null, data);
 };
 
+//PUT
 exports.update = (id, text, callback) => {
   //TBD: implement nonvolatile solution
 
@@ -68,6 +88,7 @@ exports.update = (id, text, callback) => {
   }
 };
 
+//DELETE
 exports.delete = (id, callback) => {
   //TBD: implement nonvolatile solution
 

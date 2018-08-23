@@ -17,21 +17,21 @@ app.use(express.static(path.join(__dirname, './public')));
 
 // RESTful Routes for CRUD operations //////////////////////////////////////////
 
-// Create (Crud) -- collection route
+//POST Create (Crud) -- collection route
 app.post('/todo', (req, res) => {
   Todo.create(req.body.todoText, (err, newTodo) => {
     res.status(201).json(newTodo);
   });
 });
 
-// Read all (cRud) -- collection route
+//GET Read all (cRud) -- collection route
 app.get('/todo', (req, res) => {
   Todo.readAll((err, todos) => {
     res.status(200).json(todos);
   });
 });
 
-// Read one (cRud) -- member route
+//GET Read one (cRud) -- member route
 app.get('/todo/:id', (req, res) => {
   Todo.readOne(req.params.id, (err, todo) => {
     if (todo) {
@@ -42,7 +42,7 @@ app.get('/todo/:id', (req, res) => {
   });
 });
 
-// Update (crUd) -- member route
+//PUT Update (crUd) -- member route
 app.put('/todo/:id', (req, res) => {
   Todo.update(req.params.id, req.body.todoText, (err, todo) => {
     if (todo) {
@@ -53,7 +53,7 @@ app.put('/todo/:id', (req, res) => {
   });
 });
 
-// Delete (cruD) -- member route
+//DELETE Delete (cruD) -- member route
 app.delete('/todo/:id', (req, res) => {
   Todo.delete(req.params.id, err => {
     if (err) {
