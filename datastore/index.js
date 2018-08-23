@@ -32,15 +32,23 @@ exports.create = (text, callback) => {
 
 //GET
 exports.readOne = (id, callback) => {
-  //TBD: implement nonvolatile solution
-
-  //volatile solution
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id: id, text: item });
-  }
+  exports.readAll((err, todoList) => {
+    if (err) {
+      console.error('error reading one todo');
+      throw 'error reading one todo';
+    } else {
+      let isFound = false;
+      todoList.forEach((todo, index) => {
+        if (todo.id === id) {
+          callback(null, todo);
+          isFound = true;
+        }
+      });
+      if (!isFound) {
+        callback('No todo found for that id', null);
+      }
+    }
+  });
 };
 
 //GET
@@ -52,55 +60,50 @@ exports.readAll = callback => {
     } else {
       let todoList = [];
       for (let file of fileNames) {
+        //TBD: fix reading file text with promises
         todoList.push({ id: file.slice(0, -4), text: file.slice(0, -4) });
       }
       callback(null, todoList);
     }
   });
-
-  // call readdir, async.
-  // create objects with just {id: id, text: id}
-  // later, when we know promises, we can promise the right text.
-  // push objects from result of readdir onto data array.
-  // when we get to base of callback hell, invoke original callback with return array.
-  //invoke callback on something.
-  // return an array with all saved todo objects: {id: id, text: text}
-  //volatile solution
-
-  // var data = [];
-  // _.each(items, (item, idx) => {
-  //   data.push({ id: idx, text: items[idx] });
-  // });
-  // callback(null, data);
 };
 
 //PUT
 exports.update = (id, text, callback) => {
-  //TBD: implement nonvolatile solution
-
-  //volatile solution
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id: id, text: text });
-  }
+  exports.readOne(id, (err, todo) => {
+    if (todo) {
+      let updateTodoPath = `${exports.dataDir}/${id}.txt`;
+      fs.writeFile(updateTodoPath, text, err => {
+        if (err) {
+          console.error('error updating todo');
+          throw 'error updating todo';
+        } else {
+          callback(null, null);
+        }
+      });
+    } else {
+      callback('error updating non-existant todo', null);
+    }
+  });
 };
 
 //DELETE
 exports.delete = (id, callback) => {
-  //TBD: implement nonvolatile solution
-
-  //volatile solution
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  exports.readOne(id, (err, todo) => {
+    if (todo) {
+      let updateTodoPath = `${exports.dataDir}/${id}.txt`;
+      fs.unlink(updateTodoPath, err => {
+        if (err) {
+          console.error('error deleting todo');
+          throw 'error deleting todo';
+        } else {
+          callback(null, null); //TBD a different callback?
+        }
+      });
+    } else {
+      callback('error deleting non-existant todo', null);
+    }
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
