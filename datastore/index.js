@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const Promise = require('bluebird');
+const pfs = Promise.promisifyAll(fs);
 
 var items = {};
 
@@ -55,15 +57,34 @@ exports.readOne = (id, callback) => {
 exports.readAll = callback => {
   fs.readdir(exports.dataDir, (err, fileNames) => {
     if (err) {
-      console.error('error reading from directory');
-      throw 'error reading directory';
+      console.error('Error reading files from directory');
     } else {
+      // let fileData = _.map(fileNames, file => {
+      //   let id = path.basename(file, '.txt');
+      //   let filepath = path.join(exports.dataDir, file);
+      //   return pfs.readFileAsync(filepath).then(text => {
+      //     return { id, text: text.toString() };
+      //   });
+      // });
       let todoList = [];
       for (let file of fileNames) {
-        //TBD: fix reading file text with promises
-        todoList.push({ id: file.slice(0, -4), text: file.slice(0, -4) });
+        let id = path.basename(file, '.txt');
+        let filepath = path.join(exports.dataDir, file);
+        todoList.push(
+          pfs.readFileAsync(filepath).then(text => {
+            return { id, text: text.toString() };
+          })
+        );
       }
-      callback(null, todoList);
+      Promise.all(todoList)
+        .then(fileData => {
+          console.log('success callback');
+          callback(null, fileData);
+        })
+        .catch(err => {
+          console.log('failure callback');
+          callback(err);
+        });
     }
   });
 };
