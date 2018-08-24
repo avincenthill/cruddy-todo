@@ -99,7 +99,7 @@ exports.update = (id, text, callback) => {
           console.error('error updating todo');
           throw 'error updating todo';
         } else {
-          callback(null, null);
+          callback(null, { id, text });
         }
       });
     } else {
